@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>App de Tarefas</title>
+
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <main class="app">
+        <section class="todo-card">
+            <!-- Cabeçalho do app -->
+            <h1>App de Tarefas</h1>
+
+            <p class="description">Organize suas tarefas de forma simples.</p>
+
+            <!-- Formulário de nova tarefa -->
+            <form id="taskForm" class="task-form" aria-label="Formulário para adicionar tarefa">
+                <input id="taskInput" class="task-input" type="text" placeholder="Digite uma tarefa" />
+
+                <button class="task-button" type="submit">Adicionar</button>
+            </form>
+
+            <!-- Contador de tarefas pendentes -->
+            <p id="taskCounter" class="task-counter">
+                Total de tarefas: 0 | Pendentes: 0 | Concluídas: 0
+            </p>
+            
+            <!-- Lista de tarefas -->
+            <ul id="taskList" class="task-list">
+                <!-- As tarefas serão adicionadas aqui pelo JavaScript -->
+            </ul>
+
+            <!-- Mensagem exibida quando não houver tarefas -->
+            <p id="emptyMessage" class="empty-message">
+                Nenhuma tarefa cadastrada.
+            </p>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
