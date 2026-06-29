@@ -753,6 +753,415 @@ git push origin fase2/aula1-validacao-localstorage
 
 ---
 
+
+
+---
+
+# Complemento — Fluxo com Pull Request, merge e limpeza de branch
+
+Esta seção registra os comandos e práticas usados após a criação da branch `fase2/aula1-validacao-localstorage`, incluindo commit, push, Pull Request, merge e limpeza da branch local/remota.
+
+---
+
+## 20. `git push origin nome-da-branch`
+
+Envia uma branch local para o GitHub.
+
+```bash
+git push origin fase2/aula1-validacao-localstorage
+```
+
+### Descrição
+
+Publica a branch local no repositório remoto, permitindo abrir um Pull Request no GitHub.
+
+### Quando usar
+
+Use depois de fazer commit em uma branch de trabalho.
+
+### Exemplo
+
+```bash
+git push origin fase2/aula1-validacao-localstorage
+```
+
+### Comandos adicionais
+
+Verificar a branch atual antes de enviar:
+
+```bash
+git branch
+```
+
+Verificar se há commits e alterações pendentes:
+
+```bash
+git status
+```
+
+Ver histórico resumido:
+
+```bash
+git log --oneline
+```
+
+---
+
+## 21. Abrir Pull Request no GitHub
+
+O Pull Request foi feito pela interface web do GitHub.
+
+### Descrição
+
+O Pull Request permite revisar a alteração antes de enviá-la para a branch principal `main`.
+
+### Fluxo recomendado
+
+```text
+Branch com alteração
+↓
+Push para GitHub
+↓
+Abrir Pull Request
+↓
+Revisar arquivos alterados
+↓
+Confirmar testes
+↓
+Fazer merge
+↓
+Apagar branch remota
+```
+
+### Quando usar
+
+Use sempre que quiser trabalhar com um fluxo mais profissional, evitando alterar diretamente a branch `main`.
+
+### O que revisar no Pull Request
+
+- Se a alteração tem um único objetivo.
+- Se os arquivos alterados fazem sentido.
+- Se o diff está pequeno e revisável.
+- Se os testes manuais foram executados.
+- Se a mensagem do commit está clara.
+- Se não houve alteração fora de escopo.
+
+---
+
+## 22. Merge do Pull Request
+
+O merge também foi feito pela interface web do GitHub.
+
+### Descrição
+
+O merge incorpora a alteração da branch de trabalho na branch principal `main`.
+
+### Quando usar
+
+Use depois de revisar o Pull Request e confirmar que a alteração está correta.
+
+### Resultado esperado
+
+Após o merge, a branch `main` passa a conter a melhoria implementada.
+
+### Comandos relacionados
+
+Depois do merge no GitHub, atualize a `main` local:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+---
+
+## 23. Apagar branch remota no GitHub
+
+A branch remota foi apagada pela interface web do GitHub após o merge.
+
+### Descrição
+
+Depois que uma branch já foi mesclada na `main`, ela pode ser apagada no GitHub para manter o repositório organizado.
+
+### Quando usar
+
+Use após o Pull Request ser aprovado e mesclado.
+
+### Alternativa por linha de comando
+
+Também seria possível apagar a branch remota com:
+
+```bash
+git push origin --delete fase2/aula1-validacao-localstorage
+```
+
+### Observação
+
+Apagar a branch remota não apaga automaticamente a branch local da sua máquina.
+
+---
+
+## 24. `git checkout main`
+
+Volta para a branch principal local.
+
+```bash
+git checkout main
+```
+
+### Descrição
+
+Troca a branch atual para `main`.
+
+### Quando usar
+
+Use depois de concluir uma branch de trabalho e fazer o merge do Pull Request.
+
+### Comandos adicionais
+
+Confirmar branch atual:
+
+```bash
+git branch
+```
+
+---
+
+## 25. `git pull origin main`
+
+Atualiza a branch `main` local com a versão mais recente do GitHub.
+
+```bash
+git pull origin main
+```
+
+### Descrição
+
+Baixa e aplica na sua máquina as alterações que já foram mescladas no GitHub.
+
+### Quando usar
+
+Use depois que o Pull Request for mesclado no GitHub.
+
+### Fluxo recomendado
+
+```bash
+git checkout main
+git pull origin main
+```
+
+### Resultado esperado
+
+Sua branch `main` local fica atualizada com a branch `main` remota.
+
+---
+
+## 26. `git branch -d nome-da-branch`
+
+Apaga uma branch local que já foi concluída.
+
+```bash
+git branch -d fase2/aula1-validacao-localstorage
+```
+
+### Descrição
+
+Remove a branch local da sua máquina.
+
+### Quando usar
+
+Use depois que a branch já foi mesclada na `main` e não é mais necessária.
+
+### Diferença entre `-d` e `-D`
+
+Apagar com segurança:
+
+```bash
+git branch -d nome-da-branch
+```
+
+Forçar exclusão, mesmo sem merge detectado localmente:
+
+```bash
+git branch -D nome-da-branch
+```
+
+### Recomendação
+
+Prefira `-d`. Use `-D` apenas quando tiver certeza de que a branch já foi mergeada ou não será mais usada.
+
+---
+
+## 27. `git fetch --prune`
+
+Limpa referências locais de branches remotas que já foram apagadas no GitHub.
+
+```bash
+git fetch --prune
+```
+
+### Descrição
+
+Atualiza as referências remotas e remove do seu Git local as referências para branches que não existem mais no GitHub.
+
+### Quando usar
+
+Use depois de apagar branches remotas no GitHub.
+
+### Exemplo de situação
+
+Você apagou a branch no GitHub, mas ainda aparece localmente como referência remota:
+
+```text
+origin/fase2/aula1-validacao-localstorage
+```
+
+Ao rodar:
+
+```bash
+git fetch --prune
+```
+
+essa referência remota antiga é removida.
+
+---
+
+## 28. `git branch -a`
+
+Lista branches locais e remotas.
+
+```bash
+git branch -a
+```
+
+### Descrição
+
+Mostra todas as branches conhecidas pelo seu repositório local, incluindo branches remotas.
+
+### Quando usar
+
+Use para verificar se uma branch apagada no GitHub ainda aparece como referência remota local.
+
+### Exemplo de saída
+
+```text
+* main
+  remotes/origin/main
+```
+
+Se aparecer algo como:
+
+```text
+remotes/origin/fase2/aula1-validacao-localstorage
+```
+
+e essa branch já foi apagada no GitHub, rode:
+
+```bash
+git fetch --prune
+```
+
+---
+
+## 29. `git log --oneline`
+
+Mostra o histórico de commits de forma resumida.
+
+```bash
+git log --oneline
+```
+
+### Descrição
+
+Exibe os commits do repositório em uma linha por commit.
+
+### Quando usar
+
+Use para confirmar se o commit da melhoria aparece no histórico.
+
+### Comando adicional
+
+Ver histórico em formato visual:
+
+```bash
+git log --oneline --graph --decorate --all
+```
+
+---
+
+# Fluxo completo final
+
+## Alteração com branch, Pull Request e limpeza
+
+```bash
+git status
+git checkout main
+git pull origin main
+git checkout -b fase2/aula1-validacao-localstorage
+```
+
+Depois de alterar o código:
+
+```bash
+git --no-pager diff -- script.js
+git status
+git add script.js
+git commit -m "Valida dados carregados do localStorage"
+git push origin fase2/aula1-validacao-localstorage
+```
+
+Na interface web do GitHub:
+
+```text
+Abrir Pull Request
+↓
+Revisar arquivos alterados
+↓
+Confirmar que os testes passaram
+↓
+Fazer merge do Pull Request
+↓
+Apagar branch remota
+```
+
+Depois, na máquina local:
+
+```bash
+git checkout main
+git pull origin main
+git branch -d fase2/aula1-validacao-localstorage
+git fetch --prune
+git status
+git branch
+```
+
+Resultado esperado:
+
+```text
+On branch main
+Your branch is up to date with 'origin/main'.
+nothing to commit, working tree clean
+```
+
+---
+
+# Checklist após merge de Pull Request
+
+```md
+## Checklist após merge
+
+- [ ] Pull Request foi revisado.
+- [ ] Pull Request foi mesclado na `main`.
+- [ ] Branch remota foi apagada no GitHub.
+- [ ] Voltei para a branch `main` local.
+- [ ] Rodei `git pull origin main`.
+- [ ] Apaguei a branch local com `git branch -d`.
+- [ ] Rodei `git fetch --prune`.
+- [ ] Confirmei `git status` limpo.
+- [ ] Confirmei que estou na branch `main`.
+```
+
+
 # Checklist antes de cada commit
 
 ```md
