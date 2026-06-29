@@ -180,16 +180,38 @@ function toggleTaskCompleted(taskId) {
 function loadTasks() {
   const storedTasks = localStorage.getItem("tasks");
 
-  if (storedTasks) {
-    try {
-      return JSON.parse(storedTasks);
-    } catch (error) {
-      console.error("Erro ao carregar tarefas:", error);
-      return [];
-    }
+  if (!storedTasks) {
+    return [];
   }
 
-  return [];
+  try {
+    const parsedTasks = JSON.parse(storedTasks);
+
+    if (!Array.isArray(parsedTasks)) {
+      return [];
+    }
+
+    const allTasksAreValid = parsedTasks.every(function (task) {
+      return isValidTask(task);
+    });
+
+    if (!allTasksAreValid) {
+      return [];
+    }
+
+    return parsedTasks;
+  } catch (error) {
+    console.error("Erro ao carregar tarefas:", error);git 
+    return [];
+  }
+}
+
+function isValidTask(task) {
+  return (
+    typeof task.id === "number" &&
+    typeof task.text === "string" &&
+    typeof task.completed === "boolean"
+  );
 }
 
 function saveTasks() {
