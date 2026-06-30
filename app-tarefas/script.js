@@ -120,7 +120,7 @@ function renderTasks() {
   });
 }
 
-//Responsável pela criação do item da lista (li)
+// Responsável pela criação do item da lista (li)
 function createTaskElement(task) {
   const taskItem = document.createElement("li");
   taskItem.classList.add("task-item");
@@ -158,10 +158,15 @@ function createTaskElement(task) {
     deleteTask(task.id);
   });
 
+  const taskActions = document.createElement("div");
+  taskActions.classList.add("task-actions");
+
+  taskActions.appendChild(editButton);
+  taskActions.appendChild(deleteButton);
+
   taskItem.appendChild(checkbox);
   taskItem.appendChild(taskSpan);
-  taskItem.appendChild(editButton);
-  taskItem.appendChild(deleteButton);
+  taskItem.appendChild(taskActions);
 
   return taskItem;
 }
