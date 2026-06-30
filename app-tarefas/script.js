@@ -33,10 +33,19 @@ taskForm.addEventListener("submit", function (event) {
     return;
   }
 
+  editingTaskId = null;
+
   addTask(taskText);
 
   taskInput.value = "";
   taskInput.focus();
+});
+
+// Apaga o conteúdo do input de adição ao pressionar ESC
+taskInput.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
+    taskInput.value = "";
+  }
 });
 
 // Adiciona uma nova tarefa no array
