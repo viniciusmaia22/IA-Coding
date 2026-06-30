@@ -220,3 +220,498 @@ Após a revisão, confirmei que as funcionalidades continuam funcionando correta
 4. Fazer testes manuais.
 5. Pedir para ela apontar exatamente onde cada trecho existe no código.
 ```
+
+
+## Fase 2 — Aula 1: Git, branch, diff e revisão
+
+Nesta aula, pratiquei o fluxo profissional de versionamento usando Git e GitHub.
+
+Criei uma branch específica para a melhoria:
+
+```bash
+fase2/aula1-validacao-localstoragedade de validação do array de dados
+
+
+## Conclusão — Fase 2 Aula 1
+
+A melhoria de validação dos dados carregados do localStorage foi implementada em uma branch separada.
+
+Fluxo realizado:
+- criação de branch;
+- alteração pequena e focada;
+- revisão com git diff;
+- testes manuais;
+- commit na branch;
+- push para o GitHub;
+- abertura de Pull Request;
+- merge do Pull Request;
+- exclusão da branch remota.
+
+Com isso, pratiquei um fluxo profissional de versionamento, evitando alterar diretamente a main e garantindo que a mudança fosse revisável antes de entrar no projeto principal.
+
+## Fase 2 — Aula 2: Refatoração controlada do renderTasks
+
+Nesta aula, refatorei a função `renderTasks` sem alterar o comportamento do app.
+
+Antes, `renderTasks` era responsável por:
+- limpar a lista;
+- atualizar o contador;
+- controlar a mensagem de lista vazia;
+- percorrer o array `tasks`;
+- criar o `li`;
+- criar checkbox;
+- criar texto;
+- criar botão editar;
+- criar botão excluir;
+- adicionar eventos;
+- montar o item;
+- inserir o item na lista.
+
+A refatoração criou a função `createTaskElement(task)`, responsável por criar e retornar o elemento `li` completo de uma tarefa.
+
+Com isso, `renderTasks` ficou mais simples e passou a apenas controlar o fluxo geral da renderização.
+
+Fluxo realizado:
+- criação de branch;
+- alteração pequena e focada;
+- revisão com `git diff`;
+- testes manuais;
+- commit na branch;
+- push para o GitHub;
+- abertura de Pull Request;
+- merge do Pull Request.
+
+Nenhum comportamento do app foi alterado.
+
+// Captura os elementos principais da tela
+const taskForm = document.getElementById("taskForm");
+const taskInput = document.getElementById("taskInput");
+const taskList = document.getElementById("taskList");
+const emptyMessage = document.getElementById("emptyMessage");
+const taskCounter = document.getElementById("taskCounter");
+
+// Array que guarda as tarefas do app
+let tasks = loadTasks();
+
+// Escuta o envio do formulário
+taskForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const taskText = taskInput.value.trim();
+
+  if (taskText === "") {
+    alert("Digite uma tarefa antes de adicionar.");
+    return;
+  }
+
+  addTask(taskText);
+
+  taskInput.value = "";
+  taskInput.focus();
+});
+
+// Adiciona uma nova tarefa no array
+function addTask(taskText) {
+  const newTask = {
+    id: Date.now(),
+    text: taskText,
+    completed: false
+  };
+
+  tasks.push(newTask);
+
+  saveTasks();
+  renderTasks();
+}
+
+// Remove uma tarefa do array
+function deleteTask(taskId) {
+  tasks = tasks.filter(function (task) {
+    return task.id !== taskId;
+  });
+
+  saveTasks();
+  renderTasks();
+}
+
+function editTask(taskId) {
+  const taskToEdit = tasks.find(function (task) {
+    return task.id === taskId;
+  });
+
+  if (!taskToEdit) {
+    return;
+  }
+
+  const newTaskText = prompt("Edite a tarefa:", taskToEdit.text);
+
+  if (newTaskText === null) {
+    return;
+  }
+
+  const trimmedText = newTaskText.trim();
+
+  if (trimmedText === "") {
+    alert("O texto da tarefa não pode ficar vazio.");
+    return;
+  }
+
+  tasks = tasks.map(function (task) {
+    if (task.id === taskId) {
+      return {
+        id: task.id,
+        text: trimmedText,
+        completed: task.completed
+      };
+    }
+
+    return task;
+  });
+
+  saveTasks();
+  renderTasks();
+}
+
+function updateTaskCounter() {
+  const pendingTasks = tasks.filter(function (task) {
+    return task.completed === false;
+  }).length;
+
+  const completedTasks = tasks.filter(function (task) {
+    return task.completed === true;
+  }).length;
+
+  taskCounter.textContent = `Total de tarefas: ${tasks.length} | Pendentes: ${pendingTasks} | Concluídas: ${completedTasks}`;
+}
+
+// Renderiza as tarefas na tela
+function renderTasks() {
+  taskList.innerHTML = "";
+
+  updateTaskCounter();
+
+  if (tasks.length === 0) {
+    emptyMessage.style.display = "block";
+    taskCounter.style.display = "none";
+    return;
+  }
+
+  emptyMessage.style.display = "none";
+  taskCounter.style.display = "block";
+
+  tasks.forEach(function (task) {
+    const taskElement = createTaskElement(task);
+    taskList.appendChild(taskElement);
+  });
+}
+
+// Responsável pela criação do item da lista (li)
+function createTaskElement(task) {
+  const taskItem = document.createElement("li");
+  taskItem.classList.add("task-item");
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = task.completed;
+  checkbox.classList.add("task-checkbox");
+
+  checkbox.addEventListener("change", function () {
+    toggleTaskCompleted(task.id);
+  });
+
+  const taskSpan = document.createElement("span");
+  taskSpan.classList.add("task-text");
+  taskSpan.textContent = task.text;
+
+  if (task.completed) {
+    taskSpan.classList.add("completed");
+  }
+
+  const editButton = document.createElement("button");
+  editButton.classList.add("edit-button");
+  editButton.textContent = "Editar";
+
+  editButton.addEventListener("click", function () {
+    editTask(task.id);
+  });
+
+  const deleteButton = document.createElement("button");
+  deleteButton.classList.add("delete-button");
+  deleteButton.textContent = "Excluir";
+
+  deleteButton.addEventListener("click", function () {
+    deleteTask(task.id);
+  });
+
+  const taskActions = document.createElement("div");
+  taskActions.classList.add("task-actions");
+
+  taskActions.appendChild(editButton);
+  taskActions.appendChild(deleteButton);
+
+  taskItem.appendChild(checkbox);
+  taskItem.appendChild(taskSpan);
+  taskItem.appendChild(taskActions);
+
+  return taskItem;
+}
+
+// Alterna a tarefa entre concluída e pendente
+function toggleTaskCompleted(taskId) {
+  tasks = tasks.map(function (task) {
+    if (task.id === taskId) {
+      return {
+        id: task.id,
+        text: task.text,
+        completed: !task.completed
+      };
+    }
+
+    return task;
+  });
+
+  saveTasks();
+  renderTasks();
+}
+
+function loadTasks() {
+  const storedTasks = localStorage.getItem("tasks");
+
+  if (!storedTasks) {
+    return [];
+  }
+
+  try {
+    const parsedTasks = JSON.parse(storedTasks);
+
+    if (!Array.isArray(parsedTasks)) {
+      return [];
+    }
+
+    const allTasksAreValid = parsedTasks.every(function (task) {
+      return isValidTask(task);
+    });
+
+    if (!allTasksAreValid) {
+      return [];
+    }
+
+    return parsedTasks;
+  } catch (error) {
+    console.error("Erro ao carregar tarefas:", error);git 
+    return [];
+  }
+}
+
+function isValidTask(task) {
+  return (
+    typeof task.id === "number" &&
+    typeof task.text === "string" &&
+    typeof task.completed === "boolean"
+  );
+}
+
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// Renderização inicial da tela
+renderTasks();
+
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos gerais da página */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+/* Layout principal */
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+/* Card principal */
+.todo-card {
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Cabeçalho */
+h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.description {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* Formulário */
+.task-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.task-input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.task-button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.task-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Contador */
+.task-counter {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: bold;
+}
+
+/* Lista de tarefas */
+.task-list {
+  list-style: none;
+  margin-bottom: 16px;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.task-text {
+  flex: 1;
+  font-size: 16px;
+}
+
+.task-text.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-checkbox {
+  cursor: pointer;
+}
+
+/* Ações da tarefa */
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Botão de editar */
+.edit-button {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #f59e0b;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #d97706;
+}
+
+/* Botão de excluir */
+.delete-button {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ef4444;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+/* Mensagens */
+.empty-message {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+## Fase 2 — Aula 5: Edição inline de tarefas
+
+Nesta aula, substituí a edição com `prompt()` por edição inline.
+
+Foi criada a variável `editingTaskId`, responsável por indicar qual tarefa está em modo de edição.
+
+Quando `editingTaskId` é igual ao `id` de uma tarefa, essa tarefa é renderizada com:
+- checkbox;
+- input de edição;
+- botão Salvar;
+- botão Cancelar.
+
+Quando a tarefa não está em edição, ela é renderizada normalmente com:
+- checkbox;
+- texto da tarefa;
+- botão Editar;
+- botão Excluir.
+
+A função `editTask` passou a receber o novo texto como parâmetro, validar se ele não está vazio, atualizar apenas o campo `text`, manter o mesmo `id`, manter o mesmo `completed`, salvar no `localStorage` e renderizar a tela novamente.
+
+Também foi criado o objeto `MESSAGES` para começar a centralizar textos e labels usados no app.
+
+O comportamento principal do app foi mantido:
+- adicionar tarefa;
+- editar tarefa;
+- cancelar edição;
+- impedir texto vazio;
+- excluir tarefa;
+- concluir/desmarcar;
+- atualizar contador;
+- persistir dados no localStorage.
+
+Fluxo realizado:
+- análise da alteração;
+- implementação com apoio da IA;
+- testes manuais;
+- commit;
+- Pull Request;
+- merge;
+- exclusão da branch;
+- atualização da main local.

@@ -119,6 +119,20 @@ h1 {
   flex-shrink: 0;
 }
 
+/* Input para edição inline */
+.task-edit-input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.task-edit-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
 /* Botão de editar */
 .edit-button {
   padding: 8px 10px;
