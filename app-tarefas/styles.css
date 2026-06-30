@@ -111,6 +111,14 @@ h1 {
   cursor: pointer;
 }
 
+/* Ações da tarefa */
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 /* Botão de editar */
 .edit-button {
   padding: 8px 10px;
