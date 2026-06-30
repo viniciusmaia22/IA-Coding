@@ -213,7 +213,7 @@ function loadTasks() {
 
     return parsedTasks;
   } catch (error) {
-    console.error("Erro ao carregar tarefas:", error);git 
+    console.error("Erro ao carregar tarefas:", error);
     return [];
   }
 }
