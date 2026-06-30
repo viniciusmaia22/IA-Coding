@@ -149,9 +149,22 @@ function createTaskElement(task) {
     editInput.classList.add("task-edit-input");
     editInput.setAttribute("aria-label", "Editar texto da tarefa: " + task.text);
 
+    editInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        editTask(task.id, editInput.value);
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        editingTaskId = null;
+        renderTasks();
+      }
+    });
+
     const saveButton = document.createElement("button");
     saveButton.classList.add("edit-button");
-    saveButton.textContent = MESSAGES.saveButton;
+    saveButton.textContent = "Salvar";
     saveButton.setAttribute("aria-label", "Salvar edição da tarefa: " + task.text);
 
     saveButton.addEventListener("click", function () {
@@ -160,7 +173,7 @@ function createTaskElement(task) {
 
     const cancelButton = document.createElement("button");
     cancelButton.classList.add("delete-button");
-    cancelButton.textContent = MESSAGES.cancelButton;
+    cancelButton.textContent = "Cancelar";
     cancelButton.setAttribute("aria-label", "Cancelar edição da tarefa: " + task.text);
 
     cancelButton.addEventListener("click", function () {
@@ -175,9 +188,7 @@ function createTaskElement(task) {
     taskItem.appendChild(editInput);
     taskItem.appendChild(taskActions);
 
-    setTimeout(function () {
-      editInput.focus();
-    }, 0);
+    editInput.focus();
 
     return taskItem;
   }
