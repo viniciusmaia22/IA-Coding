@@ -115,48 +115,55 @@ function renderTasks() {
   taskCounter.style.display = "block";
 
   tasks.forEach(function (task) {
-    const taskItem = document.createElement("li");
-    taskItem.classList.add("task-item");
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = task.completed;
-    checkbox.classList.add("task-checkbox");
-    checkbox.addEventListener("change", function () {
-      toggleTaskCompleted(task.id);
-    });
-
-    const taskSpan = document.createElement("span");
-    taskSpan.classList.add("task-text");
-    taskSpan.textContent = task.text;
-
-    if (task.completed) {
-      taskSpan.classList.add("completed");
-    }
-
-    const editButton = document.createElement("button");
-    editButton.classList.add("edit-button");
-    editButton.textContent = "Editar";
-
-    editButton.addEventListener("click", function () {
-       editTask(task.id);
-    });
-
-    const deleteButton = document.createElement("button");
-    deleteButton.classList.add("delete-button");
-    deleteButton.textContent = "Excluir";
-
-    deleteButton.addEventListener("click", function () {
-      deleteTask(task.id);
-    });
-
-    taskItem.appendChild(checkbox);
-    taskItem.appendChild(taskSpan);
-    taskItem.appendChild(editButton);
-    taskItem.appendChild(deleteButton);
-
-    taskList.appendChild(taskItem);
+    const taskElement = createTaskElement(task);
+    taskList.appendChild(taskElement);
   });
+}
+
+//Responsável pela criação do item da lista (li)
+function createTaskElement(task) {
+  const taskItem = document.createElement("li");
+  taskItem.classList.add("task-item");
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = task.completed;
+  checkbox.classList.add("task-checkbox");
+
+  checkbox.addEventListener("change", function () {
+    toggleTaskCompleted(task.id);
+  });
+
+  const taskSpan = document.createElement("span");
+  taskSpan.classList.add("task-text");
+  taskSpan.textContent = task.text;
+
+  if (task.completed) {
+    taskSpan.classList.add("completed");
+  }
+
+  const editButton = document.createElement("button");
+  editButton.classList.add("edit-button");
+  editButton.textContent = "Editar";
+
+  editButton.addEventListener("click", function () {
+    editTask(task.id);
+  });
+
+  const deleteButton = document.createElement("button");
+  deleteButton.classList.add("delete-button");
+  deleteButton.textContent = "Excluir";
+
+  deleteButton.addEventListener("click", function () {
+    deleteTask(task.id);
+  });
+
+  taskItem.appendChild(checkbox);
+  taskItem.appendChild(taskSpan);
+  taskItem.appendChild(editButton);
+  taskItem.appendChild(deleteButton);
+
+  return taskItem;
 }
 
 // Alterna a tarefa entre concluída e pendente
