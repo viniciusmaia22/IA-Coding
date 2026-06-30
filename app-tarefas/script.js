@@ -1,17 +1,24 @@
-// Captura os elementos principais da tela
+// ==============================
+// Elementos do DOM
+// ==============================
+
 const taskForm = document.getElementById("taskForm");
 const taskInput = document.getElementById("taskInput");
 const taskList = document.getElementById("taskList");
 const emptyMessage = document.getElementById("emptyMessage");
 const taskCounter = document.getElementById("taskCounter");
 
-// Array que guarda as tarefas do app
-let tasks = loadTasks();
+// ==============================
+// Estado da aplicação
+// ==============================
 
-// Variável para controle se o texto da tarefa está sendo editado
+let tasks = loadTasks();
 let editingTaskId = null;
 
-// Mensagens do sistema e labels dos botões
+// ==============================
+// Mensagens do sistema
+// ==============================
+
 const MESSAGES = {
   emptyTask: "Digite uma tarefa antes de adicionar.",
   emptyEdit: "O texto da tarefa não pode ficar vazio.",
@@ -22,33 +29,36 @@ const MESSAGES = {
   deleteButton: "Excluir"
 };
 
-// Escuta o envio do formulário
+// ==============================
+// Eventos principais
+// ==============================
+
 taskForm.addEventListener("submit", function (event) {
   event.preventDefault();
 
-  const taskText = taskInput.value.trim();
-
-  if (taskText === "") {
+  if (isEmptyText(taskInput.value)) {
     alert(MESSAGES.emptyTask);
     return;
   }
 
   editingTaskId = null;
 
-  addTask(taskText);
+  addTask(taskInput.value.trim());
 
   taskInput.value = "";
   taskInput.focus();
 });
 
-// Apaga o conteúdo do input de adição ao pressionar ESC
 taskInput.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
     taskInput.value = "";
   }
 });
 
-// Adiciona uma nova tarefa no array
+// ==============================
+// Funções de tarefas
+// ==============================
+
 function addTask(taskText) {
   const newTask = {
     id: Date.now(),
@@ -62,7 +72,6 @@ function addTask(taskText) {
   renderTasks();
 }
 
-// Remove uma tarefa do array
 function deleteTask(taskId) {
   tasks = tasks.filter(function (task) {
     return task.id !== taskId;
@@ -73,12 +82,12 @@ function deleteTask(taskId) {
 }
 
 function editTask(taskId, newText) {
-  const trimmedText = newText.trim();
-
-  if (trimmedText === "") {
+  if (isEmptyText(newText)) {
     alert(MESSAGES.emptyEdit);
     return;
   }
+
+  const trimmedText = newText.trim();
 
   tasks = tasks.map(function (task) {
     if (task.id === taskId) {
@@ -98,19 +107,27 @@ function editTask(taskId, newText) {
   renderTasks();
 }
 
-function updateTaskCounter() {
-  const pendingTasks = tasks.filter(function (task) {
-    return task.completed === false;
-  }).length;
+function toggleTaskCompleted(taskId) {
+  tasks = tasks.map(function (task) {
+    if (task.id === taskId) {
+      return {
+        id: task.id,
+        text: task.text,
+        completed: !task.completed
+      };
+    }
 
-  const completedTasks = tasks.filter(function (task) {
-    return task.completed === true;
-  }).length;
+    return task;
+  });
 
-  taskCounter.textContent = `Total de tarefas: ${tasks.length} | Pendentes: ${pendingTasks} | Concluídas: ${completedTasks}`;
+  saveTasks();
+  renderTasks();
 }
 
-// Renderiza as tarefas na tela
+// ==============================
+// Renderização
+// ==============================
+
 function renderTasks() {
   taskList.innerHTML = "";
 
@@ -131,64 +148,49 @@ function renderTasks() {
   });
 }
 
-// Responsável pela criação do item da lista (li)
+function updateTaskCounter() {
+  const pendingTasks = tasks.filter(function (task) {
+    return task.completed === false;
+  }).length;
+
+  const completedTasks = tasks.filter(function (task) {
+    return task.completed === true;
+  }).length;
+
+  taskCounter.textContent = `Total de tarefas: ${tasks.length} | Pendentes: ${pendingTasks} | Concluídas: ${completedTasks}`;
+}
+
 function createTaskElement(task) {
   const taskItem = document.createElement("li");
   taskItem.classList.add("task-item");
 
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.checked = task.completed;
-  checkbox.classList.add("task-checkbox");
-  checkbox.setAttribute("aria-label", "Marcar ou desmarcar tarefa: " + task.text);
-
-  checkbox.addEventListener("change", function () {
-    toggleTaskCompleted(task.id);
-  });
-
+  const checkbox = createTaskCheckbox(task);
   const taskActions = document.createElement("div");
   taskActions.classList.add("task-actions");
 
   const isEditing = editingTaskId === task.id;
 
   if (isEditing) {
-    const editInput = document.createElement("input");
-    editInput.type = "text";
-    editInput.value = task.text;
-    editInput.classList.add("task-edit-input");
-    editInput.setAttribute("aria-label", "Editar texto da tarefa: " + task.text);
+    const editInput = createEditInput(task);
 
-    editInput.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
+    const saveButton = createButton(
+      MESSAGES.saveButton,
+      "edit-button",
+      "Salvar edição da tarefa: " + task.text,
+      function () {
         editTask(task.id, editInput.value);
       }
+    );
 
-      if (event.key === "Escape") {
-        event.preventDefault();
+    const cancelButton = createButton(
+      MESSAGES.cancelButton,
+      "delete-button",
+      "Cancelar edição da tarefa: " + task.text,
+      function () {
         editingTaskId = null;
         renderTasks();
       }
-    });
-
-    const saveButton = document.createElement("button");
-    saveButton.classList.add("edit-button");
-    saveButton.textContent = "Salvar";
-    saveButton.setAttribute("aria-label", "Salvar edição da tarefa: " + task.text);
-
-    saveButton.addEventListener("click", function () {
-      editTask(task.id, editInput.value);
-    });
-
-    const cancelButton = document.createElement("button");
-    cancelButton.classList.add("delete-button");
-    cancelButton.textContent = "Cancelar";
-    cancelButton.setAttribute("aria-label", "Cancelar edição da tarefa: " + task.text);
-
-    cancelButton.addEventListener("click", function () {
-      editingTaskId = null;
-      renderTasks();
-    });
+    );
 
     taskActions.appendChild(saveButton);
     taskActions.appendChild(cancelButton);
@@ -210,24 +212,24 @@ function createTaskElement(task) {
     taskSpan.classList.add("completed");
   }
 
-  const editButton = document.createElement("button");
-  editButton.classList.add("edit-button");
-  editButton.textContent = MESSAGES.editButton;
-  editButton.setAttribute("aria-label", "Editar tarefa: " + task.text);
+  const editButton = createButton(
+    MESSAGES.editButton,
+    "edit-button",
+    "Editar tarefa: " + task.text,
+    function () {
+      editingTaskId = task.id;
+      renderTasks();
+    }
+  );
 
-  editButton.addEventListener("click", function () {
-    editingTaskId = task.id;
-    renderTasks();
-  });
-
-  const deleteButton = document.createElement("button");
-  deleteButton.classList.add("delete-button");
-  deleteButton.textContent = MESSAGES.deleteButton;
-  deleteButton.setAttribute("aria-label", "Excluir tarefa: " + task.text);
-
-  deleteButton.addEventListener("click", function () {
-    deleteTask(task.id);
-  });
+  const deleteButton = createButton(
+    MESSAGES.deleteButton,
+    "delete-button",
+    "Excluir tarefa: " + task.text,
+    function () {
+      deleteTask(task.id);
+    }
+  );
 
   taskActions.appendChild(editButton);
   taskActions.appendChild(deleteButton);
@@ -239,23 +241,79 @@ function createTaskElement(task) {
   return taskItem;
 }
 
-// Alterna a tarefa entre concluída e pendente
-function toggleTaskCompleted(taskId) {
-  tasks = tasks.map(function (task) {
-    if (task.id === taskId) {
-      return {
-        id: task.id,
-        text: task.text,
-        completed: !task.completed
-      };
-    }
+// ==============================
+// Helpers de criação de elementos
+// ==============================
 
-    return task;
+function createTaskCheckbox(task) {
+  const checkbox = document.createElement("input");
+
+  checkbox.type = "checkbox";
+  checkbox.checked = task.completed;
+  checkbox.classList.add("task-checkbox");
+  checkbox.setAttribute("aria-label", "Marcar ou desmarcar tarefa: " + task.text);
+
+  checkbox.addEventListener("change", function () {
+    toggleTaskCompleted(task.id);
   });
 
-  saveTasks();
-  renderTasks();
+  return checkbox;
 }
+
+function createEditInput(task) {
+  const editInput = document.createElement("input");
+
+  editInput.type = "text";
+  editInput.value = task.text;
+  editInput.classList.add("task-edit-input");
+  editInput.setAttribute("aria-label", "Editar texto da tarefa: " + task.text);
+
+  editInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      editTask(task.id, editInput.value);
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      editingTaskId = null;
+      renderTasks();
+    }
+  });
+
+  return editInput;
+}
+
+function createButton(text, className, ariaLabel, onClick) {
+  const button = document.createElement("button");
+
+  button.textContent = text;
+  button.classList.add(className);
+  button.setAttribute("aria-label", ariaLabel);
+  button.addEventListener("click", onClick);
+
+  return button;
+}
+
+// ==============================
+// Helpers de validação
+// ==============================
+
+function isEmptyText(text) {
+  return text.trim() === "";
+}
+
+function isValidTask(task) {
+  return (
+    typeof task.id === "number" &&
+    typeof task.text === "string" &&
+    typeof task.completed === "boolean"
+  );
+}
+
+// ==============================
+// Persistência local
+// ==============================
 
 function loadTasks() {
   const storedTasks = localStorage.getItem("tasks");
@@ -286,17 +344,12 @@ function loadTasks() {
   }
 }
 
-function isValidTask(task) {
-  return (
-    typeof task.id === "number" &&
-    typeof task.text === "string" &&
-    typeof task.completed === "boolean"
-  );
-}
-
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// Renderização inicial da tela
+// ==============================
+// Inicialização
+// ==============================
+
 renderTasks();
