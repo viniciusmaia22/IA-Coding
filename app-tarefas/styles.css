@@ -99,7 +99,9 @@ h1 {
 
 .task-text {
   flex: 1;
+  min-width: 0;
   font-size: 16px;
+  word-break: break-word;
 }
 
 .task-text.completed {
@@ -181,4 +183,51 @@ input:focus-visible {
   border-color: #2563eb;
   outline: 3px solid rgba(37, 99, 235, 0.25);
   outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 24px 12px;
+  }
+
+  .todo-card {
+    padding: 20px;
+  }
+
+  .task-form {
+    flex-direction: column;
+  }
+
+  .task-input,
+  .task-button {
+    width: 100%;
+  }
+
+  .task-item {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .task-checkbox {
+    margin-top: 4px;
+  }
+
+  .task-text,
+  .task-edit-input {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .task-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  .edit-button,
+  .delete-button {
+    flex: 1;
+    min-width: 0;
+  }
 }
