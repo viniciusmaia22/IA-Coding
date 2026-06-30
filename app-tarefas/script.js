@@ -8,6 +8,20 @@ const taskCounter = document.getElementById("taskCounter");
 // Array que guarda as tarefas do app
 let tasks = loadTasks();
 
+// Variável para controle se o texto da tarefa está sendo editado
+let editingTaskId = null;
+
+// Mensagens do sistema e labels dos botões
+const MESSAGES = {
+  emptyTask: "Digite uma tarefa antes de adicionar.",
+  emptyEdit: "O texto da tarefa não pode ficar vazio.",
+  addButton: "Adicionar",
+  editButton: "Editar",
+  saveButton: "Salvar",
+  cancelButton: "Cancelar",
+  deleteButton: "Excluir"
+};
+
 // Escuta o envio do formulário
 taskForm.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -15,7 +29,7 @@ taskForm.addEventListener("submit", function (event) {
   const taskText = taskInput.value.trim();
 
   if (taskText === "") {
-    alert("Digite uma tarefa antes de adicionar.");
+    alert(MESSAGES.emptyTask);
     return;
   }
 
@@ -49,25 +63,11 @@ function deleteTask(taskId) {
   renderTasks();
 }
 
-function editTask(taskId) {
-  const taskToEdit = tasks.find(function (task) {
-    return task.id === taskId;
-  });
-
-  if (!taskToEdit) {
-    return;
-  }
-
-  const newTaskText = prompt("Edite a tarefa:", taskToEdit.text);
-
-  if (newTaskText === null) {
-    return;
-  }
-
-  const trimmedText = newTaskText.trim();
+function editTask(taskId, newText) {
+  const trimmedText = newText.trim();
 
   if (trimmedText === "") {
-    alert("O texto da tarefa não pode ficar vazio.");
+    alert(MESSAGES.emptyEdit);
     return;
   }
 
@@ -82,6 +82,8 @@ function editTask(taskId) {
 
     return task;
   });
+
+  editingTaskId = null;
 
   saveTasks();
   renderTasks();
@@ -134,6 +136,48 @@ function createTaskElement(task) {
     toggleTaskCompleted(task.id);
   });
 
+  const taskActions = document.createElement("div");
+  taskActions.classList.add("task-actions");
+
+  const isEditing = editingTaskId === task.id;
+
+  if (isEditing) {
+    const editInput = document.createElement("input");
+    editInput.type = "text";
+    editInput.value = task.text;
+    editInput.classList.add("task-edit-input");
+
+    const saveButton = document.createElement("button");
+    saveButton.classList.add("edit-button");
+    saveButton.textContent = MESSAGES.saveButton;
+
+    saveButton.addEventListener("click", function () {
+      editTask(task.id, editInput.value);
+    });
+
+    const cancelButton = document.createElement("button");
+    cancelButton.classList.add("delete-button");
+    cancelButton.textContent = MESSAGES.cancelButton;
+
+    cancelButton.addEventListener("click", function () {
+      editingTaskId = null;
+      renderTasks();
+    });
+
+    taskActions.appendChild(saveButton);
+    taskActions.appendChild(cancelButton);
+
+    taskItem.appendChild(checkbox);
+    taskItem.appendChild(editInput);
+    taskItem.appendChild(taskActions);
+
+    setTimeout(function () {
+      editInput.focus();
+    }, 0);
+
+    return taskItem;
+  }
+
   const taskSpan = document.createElement("span");
   taskSpan.classList.add("task-text");
   taskSpan.textContent = task.text;
@@ -144,22 +188,20 @@ function createTaskElement(task) {
 
   const editButton = document.createElement("button");
   editButton.classList.add("edit-button");
-  editButton.textContent = "Editar";
+  editButton.textContent = MESSAGES.editButton;
 
   editButton.addEventListener("click", function () {
-    editTask(task.id);
+    editingTaskId = task.id;
+    renderTasks();
   });
 
   const deleteButton = document.createElement("button");
   deleteButton.classList.add("delete-button");
-  deleteButton.textContent = "Excluir";
+  deleteButton.textContent = MESSAGES.deleteButton;
 
   deleteButton.addEventListener("click", function () {
     deleteTask(task.id);
   });
-
-  const taskActions = document.createElement("div");
-  taskActions.classList.add("task-actions");
 
   taskActions.appendChild(editButton);
   taskActions.appendChild(deleteButton);
