@@ -167,3 +167,18 @@ h1 {
   color: #9ca3af;
   font-size: 14px;
 }
+
+/* Controle do focus */
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* Controle do focus específico para o input */
+.task-input:focus-visible,
+.task-edit-input:focus-visible {
+  border-color: #2563eb;
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+  outline-offset: 2px;
+}

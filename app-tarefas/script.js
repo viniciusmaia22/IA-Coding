@@ -131,6 +131,7 @@ function createTaskElement(task) {
   checkbox.type = "checkbox";
   checkbox.checked = task.completed;
   checkbox.classList.add("task-checkbox");
+  checkbox.setAttribute("aria-label", "Marcar ou desmarcar tarefa: " + task.text);
 
   checkbox.addEventListener("change", function () {
     toggleTaskCompleted(task.id);
@@ -146,10 +147,12 @@ function createTaskElement(task) {
     editInput.type = "text";
     editInput.value = task.text;
     editInput.classList.add("task-edit-input");
+    editInput.setAttribute("aria-label", "Editar texto da tarefa: " + task.text);
 
     const saveButton = document.createElement("button");
     saveButton.classList.add("edit-button");
     saveButton.textContent = MESSAGES.saveButton;
+    saveButton.setAttribute("aria-label", "Salvar edição da tarefa: " + task.text);
 
     saveButton.addEventListener("click", function () {
       editTask(task.id, editInput.value);
@@ -158,6 +161,7 @@ function createTaskElement(task) {
     const cancelButton = document.createElement("button");
     cancelButton.classList.add("delete-button");
     cancelButton.textContent = MESSAGES.cancelButton;
+    cancelButton.setAttribute("aria-label", "Cancelar edição da tarefa: " + task.text);
 
     cancelButton.addEventListener("click", function () {
       editingTaskId = null;
@@ -189,6 +193,7 @@ function createTaskElement(task) {
   const editButton = document.createElement("button");
   editButton.classList.add("edit-button");
   editButton.textContent = MESSAGES.editButton;
+  editButton.setAttribute("aria-label", "Editar tarefa: " + task.text);
 
   editButton.addEventListener("click", function () {
     editingTaskId = task.id;
@@ -198,6 +203,7 @@ function createTaskElement(task) {
   const deleteButton = document.createElement("button");
   deleteButton.classList.add("delete-button");
   deleteButton.textContent = MESSAGES.deleteButton;
+  deleteButton.setAttribute("aria-label", "Excluir tarefa: " + task.text);
 
   deleteButton.addEventListener("click", function () {
     deleteTask(task.id);

@@ -715,3 +715,59 @@ Fluxo realizado:
 - merge;
 - exclusão da branch;
 - atualização da main local.
+
+## Fase 2 — Aula 6: Limpeza e consistência após edição inline
+
+Nesta aula, realizei ajustes pequenos de consistência após a implementação da edição inline.
+
+As melhorias aplicadas foram:
+- padronização do uso de mensagens no objeto `MESSAGES`;
+- substituição de textos fixos por constantes quando aplicável;
+- revisão de comentários;
+- validação do foco no campo de edição inline;
+- limpeza de pequenos pontos deixados após a implementação anterior.
+
+Essa etapa não teve como objetivo adicionar nova funcionalidade, mas melhorar a consistência e a legibilidade do código.
+
+O comportamento principal do app foi mantido:
+- adicionar tarefa;
+- editar inline;
+- cancelar edição;
+- salvar edição;
+- validar texto vazio;
+- excluir tarefa;
+- concluir/desmarcar;
+- atualizar contador;
+- persistir dados no localStorage.
+
+Essa aula reforçou a importância de fazer pequenos ajustes em branches separadas, mantendo commits claros e fáceis de revisar.
+
+## Fase 2 — Aula 7: Acessibilidade básica
+
+Nesta aula, implementei melhorias de acessibilidade nos controles do App de Tarefas.
+
+Foram adicionados `aria-label` em elementos criados dinamicamente pelo JavaScript, como:
+- checkbox de conclusão da tarefa;
+- botão Editar;
+- botão Excluir;
+- botão Salvar;
+- botão Cancelar.
+
+Também foram adicionados estilos de `focus-visible` no CSS para melhorar a navegação por teclado, permitindo que o usuário veja claramente qual botão ou campo está focado.
+
+Essas alterações melhoram a experiência para usuários que utilizam teclado e leitores de tela.
+
+O comportamento principal do app foi mantido:
+- adicionar tarefa;
+- editar inline;
+- salvar edição;
+- cancelar edição;
+- excluir tarefa;
+- marcar/desmarcar como concluída;
+- atualizar contador;
+- persistir dados no localStorage.
+
+Melhorias futuras possíveis:
+- adicionar `aria-label` no input de edição inline;
+- permitir salvar com Enter;
+- permitir cancelar com Escape.
