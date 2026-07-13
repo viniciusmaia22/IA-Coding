@@ -31,15 +31,14 @@ git push origin nome-da-branch
 5. Apagar branch remota.
 6. Atualizar main local.
 
-### Atualização do ambiente local
+### Atualização do ambiente local após o merge
+
+Depois que o Pull Request for aprovado e mergeado no GitHub:
 
 ```
-Abrir Pull Request no GitHub.
-Revisar arquivos alterados.
-Confirmar testes.
-Fazer merge.
-Apagar branch remota.
-Atualizar main local.
+git checkout main
+git pull origin main
+git branch -d nome-da-branch
 ```
 
 ### Checklist antes do commit
