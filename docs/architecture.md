@@ -74,3 +74,16 @@ app-tarefas/
 - persistência;
 - validações.
 ```
+
+## Documentação do projeto
+
+```text
+docs/
+├── architecture.md
+├── decisions.md
+├── fluxo-git.md
+└── testes-manuais.md
+```
+
+.github/
+└── pull_request_template.md
