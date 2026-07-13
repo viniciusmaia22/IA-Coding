@@ -6,10 +6,9 @@ Descreva o objetivo deste Pull Request.
 
 ## O que mudou
 
-- Criados novos arquivos de documentação
-- Inseridas *Issues* no GitHub
-- Criados Milestones
-- Adicionadas issues aos milestones
+- 
+- 
+- 
 
 ---
 
