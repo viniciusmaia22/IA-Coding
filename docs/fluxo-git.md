@@ -39,7 +39,30 @@ Depois que o Pull Request for aprovado e mergeado no GitHub:
 git checkout main
 git pull origin main
 git branch -d nome-da-branch
+git fetch --prune
+git status
+git branch
 ```
+
+Descrição dos comandos
+
+git checkout main
+→ volta para a branch main local
+
+git pull origin main
+→ atualiza sua main local com o merge feito no GitHub
+
+git branch -d fase2/aula14-backlog-roadmap
+→ apaga a branch local da aula 14
+
+git fetch --prune
+→ remove referências locais de branches remotas que já foram apagadas no GitHub
+
+git status
+→ confirma se está tudo limpo
+
+git branch
+→ lista as branches locais restantes
 
 ### Checklist antes do commit
 
